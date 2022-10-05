@@ -63,6 +63,8 @@ main()
     #welcome_menu
     #read_welcome_menu_options
     #
+    # change into the installer directory
+    cd /root/install
     # display instructions
     marketplace_instructions
     pause
@@ -123,7 +125,7 @@ install_installer()
         echo "... https certificates and licenses ..."
         cd /root
         git clone https://github.com/red5pro/red5pro-installer.git
-        cd $pwd
+        cd $CURRENT_DIRECTORY
     else
         echo "... red5pro installer already installed ..."
     fi
