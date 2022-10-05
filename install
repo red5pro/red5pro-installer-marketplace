@@ -4,6 +4,9 @@
 # a stripped down version of the regular installer
 #
 
+# change into the installer directory
+cd /root/install
+
 RED5_HOME="/usr/local/red5pro"
 CURRENT_DIRECTORY=$(pwd)
 RPRO_SERVICE_LOCATION="/lib/systemd/system/red5pro.service"
@@ -63,8 +66,6 @@ main()
     #welcome_menu
     #read_welcome_menu_options
     #
-    # change into the installer directory
-    cd /root/install
     # display instructions
     marketplace_instructions
     pause
