@@ -83,8 +83,8 @@ marketplace_instructions()
     cls
     echo "Red5Pro Cloud Marketplace Installation"
     echo ""
-    echo "There are two steps to complete the setup"
-    echo "of your Red5Pro Single Server:"
+    echo "There are two steps to complete the setup of your"
+    echo "Red5Pro Single Server:"
     echo ""
     echo "1. Install and license Red5Pro using the account you"
     echo "   created on: https://account.red5pro.com/register"
@@ -121,6 +121,8 @@ install_installer()
         cd /root
         git clone https://github.com/red5pro/red5pro-installer.git
         cd $pwd
+    else
+        echo "... red5pro installer already installed ..."
     fi
 fi
 }
