@@ -14,7 +14,7 @@ RPRO_SERVICE_NAME="red5pro.service"
 TEMP_FOLDER="$CURRENT_DIRECTORY/tmp"
 rpro_zip="$TEMP_FOLDER/$RED5PRO_DEFAULT_DOWNLOAD_NAME"
 
-PACKAGES_DEFAULT=(language-pack-en jsvc ntp git unzip libvdpau1 net-tools)
+PACKAGES_DEFAULT=(language-pack-en jsvc ntp git unzip libvdpau1)
 PACKAGES_1604=(default-jre libva1 libva-drm1 libva-x11-1)
 PACKAGES_1804=(libva2 libva-drm2 libva-x11-2)
 PACKAGES_2004=(libva2 libva-drm2 libva-x11-2)
@@ -83,8 +83,8 @@ marketplace_instructions()
     cls
     echo "Red5Pro Cloud Marketplace Installation"
     echo ""
-    echo "To complete the setup of your Red5Pro Single Server"
-    echo "you will need to complete two steps:"
+    echo "There are two steps to complete the setup"
+    echo "of your Red5Pro Single Server:"
     echo ""
     echo "1. Install and license Red5Pro using the account you"
     echo "   created on: https://account.red5pro.com/register"
@@ -150,7 +150,7 @@ confirm_install()
         display_contact_support
         exit 1
     fi
-    netstat -an|grep :443|grep LISTEN
+    ss -tunpl|grep :443|grep LISTEN
     if [ $? -eq 0 ]; then
         echo "... red5pro https certificate installed properly ..."
     else
