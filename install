@@ -66,6 +66,7 @@ main()
     # display instructions
     marketplace_instructions
     pause
+    echo ""
     # install installer for use later with ssl renews
     install_installer
     # install red5pro
