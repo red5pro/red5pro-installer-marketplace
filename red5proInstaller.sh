@@ -124,7 +124,6 @@ install_installer()
     else
         echo "... red5pro installer already installed ..."
     fi
-fi
 }
 
 install_certificate()
@@ -138,6 +137,7 @@ install_certificate()
        echo "... https certificate already installed ..."
        echo "... use the installer in /root/red5pro-installer ..."
        echo "... to update the certificate ..."
+    fi
 }
 
 confirm_install()
