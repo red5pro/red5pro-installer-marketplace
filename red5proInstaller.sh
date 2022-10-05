@@ -104,6 +104,7 @@ install_red5pro()
     echo "... checking for Red5Pro installation ..."
     if [ ! -d /usr/local/red5pro ]; then
         echo "... installing Red5Pro ..."
+        rpro_exists=0
         auto_install_rpro "latest"
     else
         echo "... Red5Pro already installed ..."
