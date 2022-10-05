@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Cloud Market Place Installer
+# a stripped down version of the regular installer
+#
 
 RED5_HOME="/usr/local/red5pro"
 CURRENT_DIRECTORY=$(pwd)
@@ -10,7 +14,7 @@ RPRO_SERVICE_NAME="red5pro.service"
 TEMP_FOLDER="$CURRENT_DIRECTORY/tmp"
 rpro_zip="$TEMP_FOLDER/$RED5PRO_DEFAULT_DOWNLOAD_NAME"
 
-PACKAGES_DEFAULT=(language-pack-en jsvc ntp git unzip libvdpau1)
+PACKAGES_DEFAULT=(language-pack-en jsvc ntp git unzip libvdpau1 net-tools)
 PACKAGES_1604=(default-jre libva1 libva-drm1 libva-x11-1)
 PACKAGES_1804=(libva2 libva-drm2 libva-x11-2)
 PACKAGES_2004=(libva2 libva-drm2 libva-x11-2)
@@ -45,7 +49,7 @@ cls()
 pause()
 {
     printf "\n"
-    read -r -p 'Press any key to continue...' key
+    read -p "... press a key to continue ... " -n1 -s
     $current_menu
 }
 
@@ -55,9 +59,134 @@ pause()
 
 main()
 {
-    current_menu="main"
-    welcome_menu
-    read_welcome_menu_options
+    #current_menu="main"
+    #welcome_menu
+    #read_welcome_menu_options
+    #
+    # display instructions
+    marketplace_instructions
+    pause
+    # install installer for use later with ssl renews
+    install_installer
+    # install red5pro
+    install_red5pro
+    # install certificate
+    install_certificate
+    # confirm install
+    confirm_install
+    # display support message
+    display_support
+}
+
+marketplace_instructions()
+{
+    cls
+    echo "Red5Pro Cloud Marketplace Installation"
+    echo ""
+    echo "To complete the setup of your Red5Pro Single Server"
+    echo "you will need to complete two steps:"
+    echo ""
+    echo "1. Install and license Red5Pro using the account you"
+    echo "   created on: https://account.red5pro.com/register"
+    echo ""
+    echo "2. Install a Let's Encrypt Certificate to enable"
+    echo "   WebRTC streaming."
+    echo ""
+    echo "This installer will ask you a few questions to"
+    echo "guide you through the process."
+    echo ""
+
+}
+
+install_red5pro()
+{
+    echo ""
+    echo "... checking for Red5Pro installation ..."
+    if [ ! -d /usr/local/red5pro ]; then
+        echo "... installing Red5Pro ..."
+        auto_install_rpro "latest"
+    else
+        echo "... Red5Pro already installed ..."
+    fi
+}
+
+install_installer()
+{
+    # install red5pro installer
+    if [ ! -d /root/red5pro-installer ]; then
+        echo ""
+        echo "... installing red5pro installer ..."
+        echo "... can be used in the future to update ..."
+        echo "... https certificates and licenses ..."
+        cd /root
+        git clone https://github.com/red5pro/red5pro-installer.git
+        cd $pwd
+    fi
+fi
+}
+
+install_certificate()
+{
+    echo ""
+    echo "... checking for https certificate installation ..."
+    if [ ! -d /etc/letsencrypt/archive ]; then
+       echo "... installing https certificate ..."
+       rpro_ssl_installer_main
+    else
+       echo "... https certificate already installed ..."
+       echo "... use the installer in /root/red5pro-installer ..."
+       echo "... to update the certificate ..."
+}
+
+confirm_install()
+{
+    echo ""
+    echo "... confirming installation ..."
+    ps aux | grep red5-service.jar
+    if [ $? -eq 0 ]; then
+        echo "... red5pro service running properly ..."
+    else
+        echo "... red5pro service is not properly installed ..."
+        display_contact_support
+        exit 1
+    fi
+    netstat -an|grep :443|grep LISTEN
+    if [ $? -eq 0 ]; then
+        echo "... red5pro https certificate installed properly ..."
+    else
+        if [ ! -d /etc/letsencrypt/archive ]; then
+            echo "... let's encrypt not configured properly ..."
+            echo "... please re-run this installer to correct ..."
+            echo "... this issue ..."
+            display_support
+            exit 2
+        else
+            echo "... let's encrypt installed by not functioning ..."
+            echo "... properly ..."
+            display_contact_support
+            exit 3
+        fi
+    fi
+}
+
+display_contact_support()
+{
+    echo ""
+    echo "!!! WARNING !!!"
+    echo "Red5Pro is not installed correctly, please"
+    echo "contact support via our public Slack Channel"
+    echo "Red5Pro or by emailing support@red5pro.com"
+    echo "!!! WARNING !!!"
+    echo ""
+}
+
+display_support()
+{
+    echo ""
+    echo "If you need support for Red5Pro, plese"
+    echo "contact us via our public Slack Channel Red5Pro"
+    echo "or by emailing support@red5pro.com"
+    echo ""
 }
 
 welcome_menu()
@@ -90,7 +219,7 @@ welcome_menu()
     else
         log_e "Your Operating system is not supported, please use Ubuntu 16.04, 18.04 or 20.04."
         printf "\n"
-        read -r -p 'Press any key to exit...'
+        read -p "... press a key to exit ... " -n1 -s
         exit
     fi
 }
@@ -381,21 +510,24 @@ check_linux_and_java_versions(){
     fi
     
     case "${RPRO_OS_VERSION}" in
-        16.04)
-            if [[ $jdk_version == "jdk11" ]]; then
-                log_e "Ubuntu 16.04 is not supporting Java version 11. Please use Ubuntu 18.04 or higher!!!"
-                pause
-            else
-                PACKAGES=("${PACKAGES_1604[@]}")
-            fi
-        ;;
-        18.04)
-            case "${jdk_version}" in
-                jdk8) PACKAGES=("${PACKAGES_1804[@]}" "${JDK_8[@]}") ;;
-                jdk11) PACKAGES=("${PACKAGES_1804[@]}" "${JDK_11[@]}") ;;
-                *) log_e "JDK version is not supported $jdk_version"; pause ;;
-            esac
-        ;;
+        # 
+        # only 20.04 is supported
+        #
+        #16.04)
+        #    if [[ $jdk_version == "jdk11" ]]; then
+        #        log_e "Ubuntu 16.04 is not supporting Java version 11. Please use Ubuntu 18.04 or higher!!!"
+        #        pause
+        #    else
+        #        PACKAGES=("${PACKAGES_1604[@]}")
+        #    fi
+        #;;
+        #18.04)
+        #    case "${jdk_version}" in
+        #        jdk8) PACKAGES=("${PACKAGES_1804[@]}" "${JDK_8[@]}") ;;
+        #        jdk11) PACKAGES=("${PACKAGES_1804[@]}" "${JDK_11[@]}") ;;
+        #        *) log_e "JDK version is not supported $jdk_version"; pause ;;
+        #    esac
+        #;;
         20.04)
             case "${jdk_version}" in
                 jdk8) PACKAGES=("${PACKAGES_2004[@]}" "${JDK_8[@]}") ;;
@@ -414,6 +546,7 @@ install_pkg(){
         
         local install_issuse=0;
         apt-get -y update --fix-missing &> /dev/null
+        apt-get -yy upgrade
         
         for index in ${!PACKAGES[*]}
         do
@@ -666,19 +799,7 @@ install_rpro_zip()
     check_linux_and_java_versions
     install_pkg
     
-    echo "For Red5 Pro to autostart with operating system, it needs to be registered as a service"
-    read -r -p "Do you want to register Red5 Pro service now? [y/N] " response
-    case $response in
-        [yY][eE][sS]|[yY])
-            register_rpro_service
-            log_i "Red5 Pro service is now installed on your system. You can start / stop it with from the menu".
-        ;;
-        *) log_i "Skip registering Red5 Pro as a service"
-        ;;
-    esac
-    
-    echo "                             	"
-    echo -e "\e[31mNOTE: To use WebRTC it is imperative that you have SSL configured on the Red5 Pro instance.For more information see https://www.red5pro.com/docs/server/ssl/overview/\e[m"
+    register_rpro_service
     
     # Moving to home directory
     cd ~
