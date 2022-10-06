@@ -150,7 +150,7 @@ confirm_install()
 {
     echo ""
     echo "... confirming installation ..."
-    ps aux | grep red5-service.jar
+    ps aux | grep red5-service.jar > /dev/null
     if [ $? -eq 0 ]; then
         echo "... red5pro service running properly ..."
     else
@@ -158,7 +158,7 @@ confirm_install()
         display_contact_support
         exit 1
     fi
-    ss -tunpl|grep :443|grep LISTEN
+    ss -tunpl|grep :443|grep LISTEN > /dev/null
     if [ $? -eq 0 ]; then
         echo "... red5pro https certificate installed properly ..."
     else
