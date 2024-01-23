@@ -93,7 +93,8 @@ marketplace_instructions()
     echo "Red5Pro Single Server:"
     echo ""
     echo "1. Ensure DNS is properly pointed to this Red5Pro"
-    echo "   instance so that a certificate can be installed."
+    echo "   instance so that a certificate can be installed.
+    echo "   !!! This MUST be completed before continuing !!!"
     echo ""
     echo "2. Install and license Red5Pro using the account you"
     echo "   created on: https://account.red5pro.com/register"
@@ -815,16 +816,8 @@ install_rpro_zip()
     check_linux_and_java_versions
     install_pkg
     
-    echo "For Red5 Pro to autostart with operating system, it needs to be registered as a service"
-    read -r -p "Do you want to register Red5 Pro service now? [y/N] " response
-    case $response in
-        [yY][eE][sS]|[yY])
-            register_rpro_service
-            log_i "Red5 Pro service is now installed on your system. You can start / stop it with from the menu".
-        ;;
-        *) log_i "Skip registering Red5 Pro as a service"
-        ;;
-    esac
+    register_rpro_service
+    log_i "Red5 Pro service is now installed on your system."
     
     echo "                             	"
     echo -e "\e[31mNOTE: To use WebRTC it is imperative that you have SSL configured on the Red5 Pro instance.For more information see https://www.red5.net/docs/installation/ssl/overview/\e[m"
