@@ -1,5 +1,5 @@
 #!/bin/bash
 
-# copy to /usr/bin/local
+# copy to /usr/local/bin
 
 sudo /root/install/install
