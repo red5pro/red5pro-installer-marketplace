@@ -93,7 +93,7 @@ marketplace_instructions()
     echo "Red5Pro Single Server:"
     echo ""
     echo "1. Ensure DNS is properly pointed to this Red5Pro"
-    echo "   instance so that a certificate can be installed.
+    echo "   instance so that a certificate can be installed."
     echo "   !!! This MUST be completed before continuing !!!"
     echo ""
     echo "2. Install and license Red5Pro using the account you"
@@ -188,7 +188,7 @@ display_contact_support()
     echo "!!! WARNING !!!"
     echo "Red5Pro is not installed correctly, please"
     echo "contact support via our public Slack Channel"
-    echo "Red5Pro or by emailing support@red5pro.com"
+    echo "Red5Pro or by emailing support@red5.net"
     echo "!!! WARNING !!!"
     echo ""
 }
@@ -198,7 +198,7 @@ display_support()
     echo ""
     echo "If you need support for Red5Pro, plese"
     echo "contact us via our public Slack Channel Red5Pro"
-    echo "or by emailing support@red5pro.com"
+    echo "or by emailing support@red5.net"
     echo ""
 }
 
